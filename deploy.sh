@@ -6,7 +6,8 @@ case $1 in
   /google-cloud-sdk/bin/gcloud deployment-manager deployments create gke \
      --async \
      --template cluster.py \
-     --properties zone:northamerica-northeast1-a
+     --properties zone:northamerica-northeast1-a \
+     >> deployment.txt 2>&1
 
   if [[ $? == 0 ]]; then
     echo "Ok"
@@ -23,7 +24,8 @@ case $1 in
     /google-cloud-sdk/bin/gcloud deployment-manager deployments create vm-$i \
         --async \
         --template vm_template.py \
-        --properties zone:northamerica-northeast1-a
+        --properties zone:northamerica-northeast1-a \
+        >> deployment.txt 2>&1
     
     if [[ $? != 0 ]]; then
         echo "Failed."
