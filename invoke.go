@@ -8,16 +8,8 @@ import (
         "os/exec"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-        cmd := exec.CommandContext(r.Context(), "/bin/bash", "deploy.sh")
-        cmd.Stderr = os.Stderr
-        out, err := cmd.Output()
-
-        if err != nil {
-            w.WriteHeader(500)
-        }
-
-        w.Write(out)
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("You successfully deployed this application to Cloud Run! Now let the fun begin!"))
 }
 
 func gkeHandler(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +51,7 @@ func vmHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-        http.HandleFunc("/", handler)
+        http.HandleFunc("/", rootHandler)
         http.HandleFunc("/templates/gke", gkeHandler)
         http.HandleFunc("/templates/vm", vmHandler)
 
