@@ -6,14 +6,14 @@ case $1 in
   /google-cloud-sdk/bin/gcloud deployment-manager deployments create gke \
      --async \
      --template cluster.py \
-     --properties zone:northamerica-northeast1-a \
+     --properties zone:northamerica-northeast1-a,initialNodeCount:$2 \
      >> deployment.txt 2>&1
 
   if [[ $? == 0 ]]; then
     echo "Ok"
     exit 0
   else 
-    echo "Failed."
+    cat deployment.txt
     exit 1
   fi
   ;;
