@@ -21,4 +21,5 @@ resources:
   properties:
     zone: ZONE_TO_RUN
     initialNodeCount: INITIAL_NODE_COUNT
+    env: ENV
 

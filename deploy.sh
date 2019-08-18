@@ -1,48 +1,52 @@
 #!/bin/bash
 
-case $1 in
-"gke")
-  cd templates/gke
-  /google-cloud-sdk/bin/gcloud deployment-manager deployments create gke \
-     --async \
-     --template cluster.py \
-     --properties zone:northamerica-northeast1-a,initialNodeCount:$2 \
-     >> deployment.txt 2>&1
+node_count=$1
+env=""
+
+case $2 in
+"development")
+  env="dev"
+  ;;
+"staging")
+  env="staging"
+  ;;
+"production")
+  env="prod"
+  ;;
+*)
+  echo "Invalid environment."
+  exit 1
+  ;;
+esac
+
+cd templates/gke
+/google-cloud-sdk/bin/gcloud deployment-manager deployments create gke \
+    --async \
+    --template cluster.py \
+    --properties zone:northamerica-northeast1-a,initialNodeCount:$node_count,env:$env \
+    >> deployment.txt 2>&1
+
+if [[ $? == 0 ]]; then
+  echo "Kubernetes deployed. "
+else 
+  cat deployment.txt
+  exit 1
+fi
+
+rm -f deployment.txt
+
+if [[ "$3" == "a database" ]]; then
+  cd ../database
+  /google-cloud-sdk/bin/gcloud deployment-manager deployments create db \
+      --async \
+      --template cloudsql.jinja \
+      --properties instance_name:$env-sql-$(date +%s | base64 | tail -c6 | tr -d '\n=' | tr '[:upper:]' '[:lower:]') \
+      >> deployment.txt 2>&1
 
   if [[ $? == 0 ]]; then
-    echo "Ok"
-    exit 0
+    echo "Database deployed."
   else 
     cat deployment.txt
     exit 1
   fi
-  ;;
-"vm")
-  cd templates/single-vm
-  
-  for i in `seq 1 $2`; do 
-    /google-cloud-sdk/bin/gcloud deployment-manager deployments create vm-$i \
-        --async \
-        --template vm_template.py \
-        --properties zone:northamerica-northeast1-a \
-        >> deployment.txt 2>&1
-    
-    if [[ $? != 0 ]]; then
-        echo "Failed."
-        exit 1
-    fi
-  done
-
-  if [[ $? == 0 ]]; then
-    echo "Ok"
-    exit 0
-  else 
-    echo "Failed."
-    exit 1
-  fi
-  ;;
-*)
-  echo "Template unrecognized."
-  exit 1
-  ;;
-esac
+fi

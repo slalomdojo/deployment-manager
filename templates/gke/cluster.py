@@ -17,7 +17,7 @@
 def GenerateConfig(context):
   """Generate YAML resource configuration."""
 
-  name_prefix = context.env['deployment'] + '-' + context.env['name']
+  name_prefix = context.properties['env'] + '-kubernetes'
   cluster_name = name_prefix
   type_name = name_prefix + '-type'
   k8s_endpoints = {
