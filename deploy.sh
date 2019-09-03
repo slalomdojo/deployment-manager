@@ -4,6 +4,9 @@ node_count=$1
 env=""
 
 case $2 in
+"null")
+  env="none"
+  ;;
 "development")
   env="dev"
   ;;

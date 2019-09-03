@@ -17,8 +17,30 @@ func gkeHandler(w http.ResponseWriter, r *http.Request) {
         env := r.URL.Query()["env"]
         database := r.URL.Query()["database"]
 
+        var nc string
+        var ec string
+        var dbc string
+
         if len(nodeCount) > 0 {
-            cmd := exec.CommandContext(r.Context(), "/bin/bash", "deploy.sh", nodeCount[0], env[0], database[0])
+            nc = nodeCount[0]
+        } else {
+            nc = "null"
+        }
+
+        if len(env) > 0 {
+            ec = env[0]
+        } else {
+            ec = "null"
+        }
+
+        if len(database) > 0 {
+            dbc = database[0]
+        } else {
+            dbc = "null"
+        }
+
+        if len(nodeCount) > 0 {
+            cmd := exec.CommandContext(r.Context(), "/bin/bash", "deploy.sh", nc, ec, dbc)
             cmd.Stderr = os.Stderr
             out, err := cmd.Output()
 
