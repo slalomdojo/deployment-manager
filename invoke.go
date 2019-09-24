@@ -44,9 +44,9 @@ func gkeHandler(w http.ResponseWriter, r *http.Request) {
             cmd.Stderr = os.Stderr
             out, err := cmd.Output()
 
-            if err != nil {
+            if err != nil || cmd.ProcessState.ExitCode() > 0 {
                 w.WriteHeader(500)
-            }
+            } 
 
             w.Write(out)
         } else {

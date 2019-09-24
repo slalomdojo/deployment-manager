@@ -1,11 +1,10 @@
-FROM alpine:3.9
+FROM golang:1.12-alpine3.9
 
 ENV CLOUD_SDK_URL https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-200.0.0-linux-x86_64.tar.gz
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN apk add --no-cache \
-      go \
       curl \
       musl-dev \
       bash \
@@ -16,8 +15,7 @@ RUN apk add --no-cache \
     ./google-cloud-sdk/install.sh \
         --usage-reporting false \
         --path-update false \
-        -q && \
-    mkdir /go
+        -q
 
 WORKDIR /go/src/invoke
 

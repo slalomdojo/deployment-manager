@@ -23,7 +23,7 @@ case $2 in
 esac
 
 cd templates/gke
-/google-cloud-sdk/bin/gcloud deployment-manager deployments create gke \
+/go/google-cloud-sdk/bin/gcloud deployment-manager deployments create gke \
     --async \
     --template cluster.py \
     --properties zone:northamerica-northeast1-a,initialNodeCount:$node_count,env:$env \
@@ -40,7 +40,7 @@ rm -f deployment.txt
 
 if [[ "$3" == "a database" ]]; then
   cd ../database
-  /google-cloud-sdk/bin/gcloud deployment-manager deployments create db \
+  /go/google-cloud-sdk/bin/gcloud deployment-manager deployments create db \
       --async \
       --template cloudsql.jinja \
       --properties instance_name:$env-sql-$(date +%s | base64 | tail -c6 | tr -d '\n=' | tr '[:upper:]' '[:lower:]') \
